@@ -41,6 +41,14 @@ export const API_MENU_UPDATE = "/api/menu/update";
 export const API_MENU_GET_PAGING = "/api/menu/getPaging";
 export const API_MENU_DELETE = "/api/menu/delete";
 export const API_MENU_GET_PAGING_BY_ID = "/api/menu/getById";
+
+//Apps
+export const API_APP_INSERT = "/api/app/insert";
+export const API_APP_UPDATE = "/api/app/update";
+export const API_APP_GET_PAGING = "/api/app/getPaging";
+export const API_APP_DELETE = "/api/app/delete";
+export const API_APP_GET_PAGING_BY_ID = "/api/app/getById";
+//end apps
 //Schemas
 export const API_SCHEMAS_INSERT = "/api/schema/insert";
 export const API_SCHEMAS_UPDATE = "/api/schema/update";

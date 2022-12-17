@@ -43,8 +43,7 @@ export const getPagingPostsV2 = (data) =>
   api.get(url.API_POST_GET_PAGING_V2, data);
 export const deletePosts = (id, data) =>
   api.delete(`${url.API_POST_DELETE}/${id}`, data);
-export const getPostById = (id) =>
-  api.get(`${url.API_POST_GET_BY_ID}/${id}`);
+export const getPostById = (id) => api.get(`${url.API_POST_GET_BY_ID}/${id}`);
 
 //Menu
 export const insertMenu = (data) => api.create(url.API_MENU_INSERT, data);
@@ -55,7 +54,16 @@ export const deleteMenu = (id, data) =>
   api.delete(`${url.API_MENU_DELETE}/${id}`, data);
 export const getMenuById = (id, data) =>
   api.get(`${url.API_MENU_GET_PAGING_BY_ID}/${id}`, data);
-
+//Apps
+export const insertApp = (data) => api.create(url.API_APP_INSERT, data);
+export const updateApp = (id, data) =>
+  api.update(`${url.API_APP_UPDATE}/${id}`, data);
+export const getAllApp = (data) => api.get(url.API_APP_GET_PAGING, data);
+export const deleteApp = (id, data) =>
+  api.delete(`${url.API_APP_DELETE}/${id}`, data);
+export const getAppById = (id, data) =>
+  api.get(`${url.API_APP_GET_PAGING_BY_ID}/${id}`, data);
+//End Apps
 //Schemas
 export const insertSchemas = (data) => api.create(url.API_SCHEMAS_INSERT, data);
 export const updateSchemas = (id, data) =>
