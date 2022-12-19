@@ -64,14 +64,16 @@ const getAllPagingPostsV2 = async (_params) => {
     dataRes?.data &&
     dataRes?.data.length > 0 &&
     dataRes?.data.map((item) => {
+      // console.log(item);
       return {
         key: item._id,
         title: item.title,
         slug: item.slug,
-        menu:item.menu,
+        menu: item.menu,
         // category: item.category,
         tags: item.tags,
-        description: item.description,
+        // tags: [],
+        // description: item.description,
         thumb: item.thumb,
         content: item.content,
         status: item.status,
@@ -121,6 +123,7 @@ export default function NewPost(props) {
   const [visibleForm, setVisibleForm] = useState(false);
   const [title, setTitle] = useState("");
   const [tagsName, setTagsName] = useState([]);
+  const [menusName, setMenusName] = useState([]);
   const videoSchemas = {
     "@context": "https://schema.org",
     "@type": "VideoObject",
@@ -177,7 +180,7 @@ export default function NewPost(props) {
   const [script, setScript] = useState(postSchemas);
   useEffect(() => {
     const fetchData = async () => {
-      const resListMenu = await getAllMenu({pageSize:100000});
+      const resListMenu = await getAllMenu({ pageSize: 100000 });
       // const resListCat = await getPagingCategorys({ pageSize: 100000 });
       const resListTag = await getPagingTags({ pageSize: 100000 });
       const resListPost = await getAllPagingPostsV2({ pageSize: 100000 });
@@ -193,10 +196,10 @@ export default function NewPost(props) {
   }, []);
   useEffect(() => {
     const value = props.match.params;
-    console.log(value);
+    // console.log(value);
     const getPost = async () => {
       const post = await getPostById(value.id);
-      console.log(post);
+      // console.log(post);
       const schema = await getSchemasByPost(value.id);
       schema.map((item) => (item.script = JSON.parse(item.script)));
       setCacheSchemas(schema);
@@ -252,6 +255,7 @@ export default function NewPost(props) {
     message.success(`Save schemas Success!`);
   };
   const handleChangeTags = (value) => {
+    // console.log('value: ', value);
     const listTagName = value.map((item) => {
       const index = listTag.findIndex((x) => x._id === item);
       if (index !== -1) {
@@ -273,6 +277,35 @@ export default function NewPost(props) {
       setCacheSchemas(cacheSchemas);
     }
   };
+  //-- handle change menu
+  const handleChangeMenus = (value) => {
+    // console.log("value: ", typeof value);
+    const listMenuName = value.map((item) => {
+      const index = listMenu.findIndex((x) => x._id === item);
+      if (index !== -1) {
+        return listMenu[index].menuName;
+      } else {
+        return item;
+      }
+    });
+    setMenusName(listMenuName);
+    script.articleSection = listMenuName;
+    setScript(script);
+    form.setFieldsValue({ script: JSON.stringify(script, undefined, 4) });
+    if (cacheSchemas.length !== 0) {
+      cacheSchemas.map((item) => {
+        if (item?.script?.articleSection) {
+          item.script.articleSection = listMenuName;
+        }
+      });
+      setCacheSchemas(cacheSchemas);
+    }
+  };
+
+  //--end
+
+  // console.log(`listMenu`, listMenu);
+
   const handleChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     script.image[
@@ -296,7 +329,8 @@ export default function NewPost(props) {
     }
   };
   const onFinish = async (data) => {
-    const addTags = await data.tags.map(async (item) => {
+    // console.log(data, "datadata");
+    const addTags = await data?.tags?.map(async (item) => {
       const index = listTag.findIndex((x) => x._id === item);
       if (index === -1) {
         const dataReq = {
@@ -310,82 +344,82 @@ export default function NewPost(props) {
         return item;
       }
     });
-    Promise.all(addTags).then(async (tags) => {
-      // console.log(tags, "tagData");
-      let content = "",
-        description = "";
-      if (editorContentRef.current) {
-        content = editorContentRef.current.getContent() || "";
-      }
-      if (editorDescriptionRef.current) {
-        description = editorDescriptionRef.current.getContent() || "";
-      }
-      console.log(data);
-      const dataReq = {
-        title: data.title,
-        slug: data.slug,
-        description: description,
-        thumb: previewTitle,
-        content: content,
-        menu: data.menu || null,
-        // category: data.category,
-        tags: tags,
-        user: user_id,
-        numberOfReader: data.numberOfReader,
-        status: data.id ? data.status : data.status.value,
-      };
-      if (!data.id) {
-        const dataRes = await insertPosts(dataReq);
-        if (dataRes.status === 1) {
-          if (cacheSchemas.length !== 0) {
-            cacheSchemas.map(async (item) => {
-              const dataReqSchema = {
-                name: item.name,
-                script: item.script,
-                post: dataRes.data._id,
-              };
-              await insertSchemas(dataReqSchema);
-            });
-
-            message.success(`Save Success! ${dataRes.message}`);
-            onClose();
-            const dataAll = await getAllPagingPostsV2();
-            setListPost(dataAll);
-            handleRefresh();
-          } else {
-            const dataReqSchema = {
-              name: form.getFieldValue(["nameSchemas"]),
-              script: `${form.getFieldValue(["script"])}`,
-              post: dataRes.data._id,
-            };
-            await insertSchemas(dataReqSchema);
-            message.success(`Save Success! ${dataRes.message}`);
-            onClose();
-            const dataAll = await getAllPagingPostsV2();
-            setListPost(dataAll);
-            handleRefresh();
-          }
-        } else message.error(`Save Failed! ${dataRes.message}`);
-      } else {
-        const dataRes = await updatePosts(data.id, dataReq);
-        if (dataRes.status === 1) {
+    // console.log("haha");
+    let content = "",
+      description = "";
+    if (editorContentRef.current) {
+      content = editorContentRef.current.getContent() || "";
+    }
+    if (editorDescriptionRef.current) {
+      description = editorDescriptionRef.current.getContent() || "";
+    }
+    console.log(data.menus, "datadata");
+    // console.log(data);
+    const dataReq = {
+      title: data.title,
+      slug: data.slug,
+      // description: description,
+      // thumb: previewTitle,
+      content: content,
+      menu: data.menus || null,
+      // category: data.category,
+      // tags: [],
+      user: user_id,
+      numberOfReader: data.numberOfReader,
+      status: data.id ? data.status : data.status,
+    };
+    console.log("dataReq: ", dataReq.menu);
+    if (!data.id) {
+      const dataRes = await insertPosts(dataReq);
+      if (dataRes.status === 1) {
+        if (cacheSchemas.length !== 0) {
           cacheSchemas.map(async (item) => {
             const dataReqSchema = {
               name: item.name,
-              script: JSON.stringify(item.script),
-              post: data.id,
+              script: item.script,
+              post: dataRes.data._id,
             };
-            // console.log(dataReqSchema, "dataReqSchema");
-            await updateSchemas(item._id, dataReqSchema);
+            await insertSchemas(dataReqSchema);
           });
+
           message.success(`Save Success! ${dataRes.message}`);
           onClose();
           const dataAll = await getAllPagingPostsV2();
           setListPost(dataAll);
           handleRefresh();
-        } else message.error(`Save Failed! ${dataRes.message}`);
-      }
-    });
+        } else {
+          const dataReqSchema = {
+            name: form.getFieldValue(["nameSchemas"]),
+            script: `${form.getFieldValue(["script"])}`,
+            post: dataRes.data._id,
+          };
+          await insertSchemas(dataReqSchema);
+          message.success(`Save Success! ${dataRes.message}`);
+          onClose();
+          const dataAll = await getAllPagingPostsV2();
+          setListPost(dataAll);
+          handleRefresh();
+        }
+      } else message.error(`Save Failed! ${dataRes.message}`);
+    } else {
+      const dataRes = await updatePosts(data.id, dataReq);
+      if (dataRes.status === 1) {
+        cacheSchemas.map(async (item) => {
+          const dataReqSchema = {
+            name: item.name,
+            script: JSON.stringify(item.script),
+            post: data.id,
+          };
+          // console.log(dataReqSchema, "dataReqSchema");
+          await updateSchemas(item._id, dataReqSchema);
+        });
+        message.success(`Save Success! ${dataRes.message}`);
+        onClose();
+        const dataAll = await getAllPagingPostsV2();
+        setListPost(dataAll);
+        handleRefresh();
+      } else message.error(`Save Failed! ${dataRes.message}`);
+    }
   };
   const handleChangeTypeSchemas = (value) => {
     if (value === "video") {
@@ -455,6 +489,7 @@ export default function NewPost(props) {
     },
   };
   const handleChangeTitle = (value) => {
+    // console.log("value: ", value);
     setTitle(value);
     script.headline = value;
     script.mainEntityOfPage["@id"] = `${process.env.REACT_APP_URL}/${toSlug(
@@ -469,8 +504,9 @@ export default function NewPost(props) {
       cacheSchemas.map((item) => {
         if (item?.script?.headline) {
           item.script.headline = value;
-          item.script.mainEntityOfPage["@id"] = `${process.env.REACT_APP_URL
-            }/${toSlug(value)}`;
+          item.script.mainEntityOfPage["@id"] = `${
+            process.env.REACT_APP_URL
+          }/${toSlug(value)}`;
         } else {
           item.script.name = `VIDEO: ${value}`;
         }
@@ -480,7 +516,7 @@ export default function NewPost(props) {
     // console.log(cacheSchemas);
   };
   const handleCancel = () => setPreviewVisible(false);
-  const handleChangeEditor = () => { };
+  const handleChangeEditor = () => {};
   const handleChangeEditorDescription = (value, editor) => {
     const p = document.createElement("p");
     p.innerHTML = value;
@@ -498,6 +534,7 @@ export default function NewPost(props) {
       setCacheSchemas(cacheSchemas);
     }
   };
+  // console.log(listStatus);
   return (
     <React.Fragment>
       <div className="page-content">
@@ -573,52 +610,99 @@ export default function NewPost(props) {
                     placeholder="Enter post slug!"
                     name="slug"
                     allowClear={true}
+                    // onChange={(e) => handleChangeTitle(e.target.value)}
                   />
                 </Form.Item>
               </Col>
+              {/* <Col sm={3}>
+                <Form.Item
+                  name="menu"
+                  label="Post Menu"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select post menu!",
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select a post menu!"
+                    allowClear
+                    showSearch
+                    name="menu"
+                    filterOption={(input, option) =>
+                      option.children.includes(input)
+                    }
+                    filterSort={(optionA, optionB) =>
+                      optionA.children
+                        .toLowerCase()
+                        .localeCompare(optionB.children.toLowerCase())
+                    }
+                  >
+                    {listMenu.length > 0 &&
+                      listMenu.map((item) => {
+                        return (
+                          <Option key={item._id} value={item._id}>
+                            {item.menuName +
+                              (item.parent != null
+                                ? " (" + item.parent.menuName + ")"
+                                : "")}
+                          </Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
+              </Col> */}
+
+              {/* Menu choose multi */}
               <Col sm={3}>
                 <Form.Item
-                    name="menu"
-                    label="Post Menu"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please select post menu!",
-                      },
-                    ]}
+                  // name="tags"
+                  // label="Post Tags"
+                  name="menus"
+                  label="Post Menus"
+                  rules={[
+                    {
+                      required: false,
+                      message: "Please select post menus!",
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select post menus!"
+                    allowClear
+                    onChange={handleChangeMenus}
+                    mode="tags"
+                    name="tags"
+                    // filterOption={(input, option) =>
+                    //   option.children.includes(input)
+                    // }
+                    // filterSort={(optionA, optionB) =>
+                    //   optionA.children
+                    //     .toLowerCase()
+                    //     .localeCompare(optionB.children.toLowerCase())
+                    // }
                   >
-                        <Select
-                          placeholder="Select a post menu!"
-                          allowClear
-                          showSearch
-                          name="menu"
-                          filterOption={(input, option) =>
-                            option.children.includes(input)
-                          }
-                          filterSort={(optionA, optionB) =>
-                            optionA.children
-                              .toLowerCase()
-                              .localeCompare(optionB.children.toLowerCase())
-                          }
-                        >
-                          {listMenu.length > 0 &&
-                            listMenu.map((item) => {
-                              return (
-                                <Option key={item._id} value={item._id}>
-                                  {item.menuName + (item.parent != null? (" ("+ item.parent.menuName + ")"):'')}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-                </Col>
-              <Col sm={3}>
+                    {listMenu.length > 0 &&
+                      listMenu.map((item) => {
+                        // console.log(`item`,item);
+                        return (
+                          <Option key={item._id} value={item._id}>
+                            {item.menuName}
+                          </Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              {/* Post tag */}
+              {/* <Col sm={3}>
                 <Form.Item
                   name="tags"
                   label="Post Tags"
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: "Please select post tags!",
                     },
                   ]}
@@ -629,17 +713,18 @@ export default function NewPost(props) {
                     onChange={handleChangeTags}
                     mode="tags"
                     name="tags"
-                  // filterOption={(input, option) =>
-                  //   option.children.includes(input)
-                  // }
-                  // filterSort={(optionA, optionB) =>
-                  //   optionA.children
-                  //     .toLowerCase()
-                  //     .localeCompare(optionB.children.toLowerCase())
-                  // }
+                    // filterOption={(input, option) =>
+                    //   option.children.includes(input)
+                    // }
+                    // filterSort={(optionA, optionB) =>
+                    //   optionA.children
+                    //     .toLowerCase()
+                    //     .localeCompare(optionB.children.toLowerCase())
+                    // }
                   >
                     {listTag.length > 0 &&
                       listTag.map((item) => {
+                        // console.log('item: ', item);
                         return (
                           <Option key={item._id} value={item._id}>
                             {item.tagName}
@@ -648,15 +733,16 @@ export default function NewPost(props) {
                       })}
                   </Select>
                 </Form.Item>
-              </Col>
-              <Col sm={3}>
+              </Col> */}
+              
+              {/* <Col sm={3}>
                 <Form.Item
                   name="thumb"
                   label="Post Thumb"
                   className=""
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: "Please select post thumb!",
                     },
                   ]}
@@ -700,7 +786,7 @@ export default function NewPost(props) {
                     )}
                   </Space>
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col sm={3}>
                 <Form.Item name="status" label="Post Status">
@@ -708,7 +794,8 @@ export default function NewPost(props) {
                     name="status"
                     placeholder="Select a post status!"
                     allowClear
-                  // defaultValue={{ value: "1", label: "Hiện bài" }}
+
+                    // defaultValue={{ value: "1", label: "Hiện bài" }}
                   >
                     {listStatus.length > 0 &&
                       listStatus.map((item, index) => {
@@ -721,93 +808,18 @@ export default function NewPost(props) {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col sm={3}>
+              {/* <Col sm={3}>
                 <Form.Item name="numberOfReader" label="Post Number Of Reader">
                   <Input
                     placeholder="Enter number of reader"
                     name="numberOfReader"
                     allowClear={true}
                     type="number"
-                  // showCount
+                    // showCount
                   />
                 </Form.Item>
-              </Col>
-              <Col xs={12}>
-                <div className="ant-col ant-form-item-label">
-                  <label
-                    htmlFor="content"
-                    className="ant-form-item-required"
-                    title="Post Content"
-                  >
-                    Post Description
-                  </label>
-                </div>
-                <Editor
-                  apiKey={"inq28en58nysf40wc60roky9ar3xuxdpthtlfhjq20fccana"}
-                  onInit={(evt, editor) => {
-                    editorDescriptionRef.current = editor;
-                  }}
-                  initialValue={description}
-                  onEditorChange={handleChangeEditorDescription}
-                  // value={formVal?.post_description}
-                  init={{
-                    height: 300,
-                    menubar: false,
-                    file_picker_callback: function (cb, value, meta) {
-                      var input = document.createElement("input");
-                      input.setAttribute("type", "file");
-                      input.setAttribute("accept", "image/*");
-                      input.onchange = function () {
-                        var file = this.files[0];
+              </Col> */}
 
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                          var id = "blobid1" + new Date().getTime();
-                          var blobCache =
-                            editorDescriptionRef.current.editorUpload.blobCache;
-                          var base64 = reader.result.split(",")[1];
-                          var blobInfo = blobCache.create(id, file, base64);
-                          blobCache.add(blobInfo);
-
-                          /* call the callback and populate the Title field with the file name */
-                          cb(blobInfo.blobUri(), { title: file.name });
-                        };
-                        reader.readAsDataURL(file);
-                      };
-                      input.click();
-                    },
-                    paste_data_images: true,
-                    image_title: true,
-                    automatic_uploads: true,
-                    file_picker_types: "image",
-                    plugins: [
-                      "advlist",
-                      "autolink",
-                      "lists",
-                      "link",
-                      "image",
-                      "charmap",
-                      "preview",
-                      "anchor",
-                      "searchreplace",
-                      "visualblocks",
-                      "code",
-                      "fullscreen",
-                      "insertdatetime",
-                      "media",
-                      "table",
-                      "code",
-                      "help",
-                      "wordcount",
-                      "image",
-                    ],
-                    toolbar:
-                      "undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code",
-                    content_style:
-                      "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                  }}
-                />
-              </Col>
               <Col xs={12}>
                 <div className="ant-col ant-form-item-label">
                   <label
@@ -919,7 +931,7 @@ export default function NewPost(props) {
                     allowClear
                     defaultValue={"post"}
                     onChange={handleChangeTypeSchemas}
-                  // defaultValue={{ value: "1", label: "Hiện bài" }}
+                    // defaultValue={{ value: "1", label: "Hiện bài" }}
                   >
                     <Option key={0} value={"post"}>
                       Post Schemas

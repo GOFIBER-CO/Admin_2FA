@@ -54,7 +54,8 @@ export const deleteMenu = (id, data) =>
   api.delete(`${url.API_MENU_DELETE}/${id}`, data);
 export const getMenuById = (id, data) =>
   api.get(`${url.API_MENU_GET_PAGING_BY_ID}/${id}`, data);
-//Apps
+
+  //Apps
 export const insertApp = (data) => api.create(url.API_APP_INSERT, data);
 export const updateApp = (id, data) =>
   api.update(`${url.API_APP_UPDATE}/${id}`, data);
@@ -147,3 +148,21 @@ export const deleteUser = (id, data) =>
 export const getPagingUser = (data) => api.get(url.API_USER_GET_PAGING, data);
 export const getUserById = (id, data) =>
   api.get(`${url.API_USER_GET_PAGING_BY_ID}/${id}`, data);
+
+//Feedback
+export const insertFeedback = (data) =>
+  api.create(url.API_FEEDBACK_INSERT, data);
+// export const updateMenu = (id, data) =>
+//   api.update(`${url.API_MENU_UPDATE}/${id}`, data);
+
+export const updateFeedback = (id, data) =>
+  api.update(`${url.API_FEEDBACK_UPDATE}/${id}`, data);
+export const getAllFeedback = (data) =>
+  api.get(url.API_FEEDBACK_GET_PAGING, data);
+
+// export const deleteMenu = (id, data) =>
+//   api.delete(`${url.API_MENU_DELETE}/${id}`, data);
+export const deleteFeedback = (id, data) =>
+  api.delete(`${url.API_FEEDBACK_DELETE}/${id}`, data);
+// export const getMenuById = (id, data) =>
+//   api.get(`${url.API_MENU_GET_PAGING_BY_ID}/${id}`, data);

@@ -68,13 +68,12 @@ const getAllPagingPostsV2 = async (_params) => {
     dataRes?.data &&
     dataRes?.data.length > 0 &&
     dataRes?.data.map((item) => {
-      console.log(item.menu)
       return {
         key: item._id,
         title: item.title,
         slug: item.slug,
         menu: item.menu,
-        // category: item.category,
+        category: item.category,
         tags: item.tags,
         description: item.description,
         thumb: item.thumb,
@@ -109,7 +108,7 @@ const Posts = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resListMenu = await getAllMenu({pageSize:100000});
+      const resListMenu = await getAllMenu({ pageSize: 100000 });
       // const resListCat = await getPagingCategorys({ pageSize: 100000 });
       const resListTag = await getPagingTags({ pageSize: 100000 });
       const resListPost = await getAllPagingPostsV2({ pageSize: 100000 });
@@ -132,14 +131,14 @@ const Posts = () => {
     const dataReq = {
       title: data.title,
       slug: data.slug,
-      description: data.description,
-      thumb: previewTitle,
+      // description: data.description,
+      // thumb: previewTitle,
       content: content,
       menu: data.menu,
       // category: data.category,
-      tags: data.tags,
+      // tags: data.tags,
       user: user_id,
-      numberOfReader: data.numberOfReader,
+      // numberOfReader: data.numberOfReader,
       status: data.id ? data.status : data.status.value,
     };
     if (!data.id) {
@@ -304,46 +303,54 @@ const Posts = () => {
       title: "Menu",
       dataIndex: "menu",
       render: (_, record) => {
-        console.log(record)
-        // return record.menu.menuName && (record.menu.menuName!=null? `(${record.menu.parent.menuName})`:'');
-        return <>{record.menu.menuName + (record.menu.parent!=null?(" ("+record.menu.parent.menuName + ")"):'')} </>
+        console.log(`_`,_);
+        const listMenuName = _?.map((item, index) => {
+                return (
+                  <Tag color="default" key={index}>
+                    {item.menuName}
+                  </Tag>
+                );
+              });
+              return listMenuName;
       },
     },
-    {
-      title: "Tags",
-      dataIndex: "tags",
-      render: (_, record) => {
-        const listTagName = _?.map((item, index) => {
-          return (
-            <Tag color="default" key={index}>
-              {item.tagName}
-            </Tag>
-          );
-        });
-        return listTagName;
-      },
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      render: (_, record) => {
-        const strText = record.description;
-        return strText.slice(0, 50) + "...";
-      },
-    },
-    {
-      title: "Thumb",
-      dataIndex: "thumb",
-      render: (_, record) => {
-        return (
-          <Image width={150} src={`https://bongdathethao.b-cdn.net/${_}`} />
-        );
-      },
-    },
+    // {
+    //   title: "Tags",
+    //   dataIndex: "tags",
+    //   render: (_, record) => {
+    //     const listTagName = _?.map((item, index) => {
+    //       return (
+    //         <Tag color="default" key={index}>
+    //           {item.tagName}
+    //         </Tag>
+    //       );
+    //     });
+    //     return listTagName;
+    //   },
+    // },
+    // {
+    //   title: "Description",
+    //   dataIndex: "description",
+    //   render: (_, record) => {
+    //     const strText = record.description;
+    //     return strText.slice(0, 50) + "...";
+    //   },
+    // },
+    // {
+    //   title: "Thumb",
+    //   dataIndex: "thumb",
+    //   render: (_, record) => {
+    //     return (
+    //       <Image width={150} src={`https://bongdathethao.b-cdn.net/${_}`} />
+    //     );
+    //   },
+    // },
     {
       title: "Content",
       dataIndex: "content",
       render: (_, record) => {
+        // console.log('record: ', record);
+        // console.log(record);
         return convertHtmlText(_);
       },
     },
@@ -356,10 +363,10 @@ const Posts = () => {
         if (_ === 2) return <Badge color="blue" text="Chờ duyệt" />;
       },
     },
-    {
-      title: "Number of reader",
-      dataIndex: "numberOfReader",
-    },
+    // {
+    //   title: "Numsdasdfasdber of reader",
+    //   dataIndex: "numberOfReader",
+    // },
     {
       title: "Action",
       dataIndex: "",
@@ -514,7 +521,7 @@ const Posts = () => {
                       </Form.Item>
                     </Col> */}
                     <Col sm={3}>
-                  <Form.Item
+                      <Form.Item
                         name="menu"
                         label="Post Menu"
                         rules={[
@@ -548,7 +555,7 @@ const Posts = () => {
                             })}
                         </Select>
                       </Form.Item>
-                </Col>
+                    </Col>
                     <Col sm={3}>
                       <Form.Item
                         name="tags"
@@ -872,33 +879,6 @@ const Posts = () => {
                         allowClear={true}
                         onChange={(e) => setPostSlug(e.target.value)}
                         value={postSlug}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col sm={4}>
-                    <Form.Item
-                      name="postDescription"
-                      label="Post Description"
-                      rules={[
-                        {
-                          required: false,
-                          message: "Please input post description!",
-                        },
-                        {
-                          type: "postDescription",
-                        },
-                        {
-                          type: "string",
-                          min: 1,
-                        },
-                      ]}
-                    >
-                      <Input
-                        placeholder="Enter post description"
-                        name="postDescription"
-                        allowClear={true}
-                        onChange={(e) => setPostDescription(e.target.value)}
-                        value={postDescription}
                       />
                     </Form.Item>
                   </Col>
