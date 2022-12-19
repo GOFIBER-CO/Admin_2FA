@@ -9,6 +9,9 @@ import Tags from "../pages/Tags";
 import categories from "../pages/Categories";
 import Menus from "../pages/Menus";
 import ShortCodes from "../pages/ShortCodes";
+import Feedbacks from "../pages/Feedbacks";
+import Apps from "../pages/Apps";
+
 //login
 import Login from "../pages/Authentication/Login";
 import Logout from "../pages/Authentication/Logout";
@@ -18,7 +21,6 @@ import Roles from "../pages/Authentication/Role";
 import Actions from "../pages/Authentication/Action";
 import RoleActions from "../pages/Authentication/RoleAction";
 import SchemasActions from "../pages/Schemas";
-import Feedbacks from "../pages/Feedbacks";
 import UploadImages from "../pages/UploadImages";
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -36,6 +38,7 @@ const authProtectedRoutes = [
   { path: "/roleActions", component: RoleActions },
   { path: "/schemas", component: SchemasActions },
   { path: "/feedbacks", component: Feedbacks },
+  { path: "/apps", component: Apps },
   { path: "/uploadImages", component: UploadImages },
 
   {

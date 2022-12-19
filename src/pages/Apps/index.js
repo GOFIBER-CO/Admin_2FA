@@ -20,7 +20,7 @@ import {
 } from "../../helpers/helper";
 import moment from "moment";
 
-const ShortCodes = () => {
+const Apps = () => {
   document.title = "Management Apps";
 
   const [form] = Form.useForm();
@@ -29,16 +29,19 @@ const ShortCodes = () => {
   const [isShow, setIsShow] = useState(false);
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
+  const [listApp, setApp] = useState([]);
 
+  // -- Load data
   useEffect(() => {
     async function fetchData() {
       const dataRes = await getAllData();
-      setShortCode(dataRes);
+      setApp(dataRes);
     }
     fetchData();
   }, []);
 
   const getAllData = async (_prams) => {
+    console.log("_prams: ", _prams);
     const params = _prams
       ? _prams
       : {
@@ -52,11 +55,14 @@ const ShortCodes = () => {
       dataRes?.data &&
       dataRes?.data.length > 0 &&
       dataRes?.data.map((item) => {
+        console.log("item", item);
+
         return {
           key: item._id,
-          name: item.name,
-          content: item.content,
-          status: item.status,
+          name: item.appName,
+          icon: item.appIcon,
+          content: item.appContent,
+          // status: item.status,
           createdTime: moment(new Date(item.createdTime)).format("DD/MM/YYYY"),
         };
       });
@@ -89,7 +95,7 @@ const ShortCodes = () => {
     setIsShow(false);
     //
     const dataRes = await getAllData();
-    setShortCode(dataRes);
+    setApp(dataRes);
   };
 
   const handleSearch = async () => {
@@ -101,11 +107,11 @@ const ShortCodes = () => {
       search: dataForm.name ? dataForm.name : "",
     };
     const dataRes = await getAllData(params);
-    setShortCode(dataRes);
+    setApp(dataRes);
   };
 
   const onEdit = (key) => {
-    const dataEdit = listShortCode.filter((item) => item.key === key);
+    const dataEdit = listApp.filter((item) => item.key === key);
     //
     setIsShow(dataEdit[0].status);
     //
@@ -134,20 +140,25 @@ const ShortCodes = () => {
     formSearch.resetFields();
     const dataRes = await getAllData();
     setIsShow(false);
-    setShortCode(dataRes);
+    setApp(dataRes);
   };
 
   const handleChange = () => {
     setIsShow(!isShow);
   };
 
+  // Filed
   const columns = [
     {
-      title: "Name",
+      title: "App Name",
       dataIndex: "name",
     },
     {
-      title: "Content",
+      title: "App Icon",
+      dataIndex: "icon",
+    },
+    {
+      title: "App Content",
       dataIndex: "content",
     },
     {
@@ -158,7 +169,7 @@ const ShortCodes = () => {
       title: "Action",
       dataIndex: "",
       render: (_, record) =>
-        listShortCode.length >= 1 ? (
+        listApp.length >= 1 ? (
           <Space>
             <Tooltip title="Edit">
               <Button
@@ -206,7 +217,7 @@ const ShortCodes = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Short Code" pageTitle="Management Short Codes" />
+          <BreadCrumb title="App" pageTitle="Management App" />
           <Form
             form={formSearch}
             layout="vertical"
@@ -383,7 +394,7 @@ const ShortCodes = () => {
             </Col>
           </div>
           <div>
-            <Table columns={columns} dataSource={listShortCode} />
+            <Table columns={columns} dataSource={listApp} />
           </div>
         </Container>
       </div>
@@ -391,4 +402,4 @@ const ShortCodes = () => {
   );
 };
 
-export default ShortCodes;
+export default Apps;

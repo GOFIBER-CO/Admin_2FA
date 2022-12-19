@@ -11,6 +11,7 @@ const Navdata = () => {
   const [isBanners, setBanners] = useState(false);
   const [isSchema, setIsSchema] = useState(false);
   const [isFeedback, setIsFeedback] = useState(false);
+  const [isApp, setIsApp] = useState(false);
   const [isUploadImage, setIsUploadImage] = useState(false);
   const [isAuthentications, setAuthentications] = useState(false);
 
@@ -44,10 +45,12 @@ const Navdata = () => {
   }, [history, iscurrentState, isDashboard, isPosts, isMenus]);
 
   const menuItems = [
+    
     {
       label: "Menu",
       isHeader: true,
     },
+
     {
       id: "dashboard",
       label: "Dashboard",
@@ -69,6 +72,29 @@ const Navdata = () => {
         },
       ],
     },
+    // --
+    {
+      id: "apps",
+      label: "Apps",
+      icon: "ri-dashboard-2-line",
+      link: "/#",
+      stateVariables: isApp,
+      click: function (e) {
+        e.preventDefault();
+        setIsApp(!isApp);
+        setIscurrentState("Menus");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "apps",
+          label: "Apps",
+          link: "/apps",
+          parentId: "post",
+        },
+      ],
+    },
+    // --
     {
       id: "posts",
       label: "Posts",
