@@ -274,7 +274,7 @@ const ShortCodes = () => {
                 placement={"right"}
                 width={"30%"}
                 onClose={onClose}
-                visible={visibleForm}
+                open={visibleForm}
                 bodyStyle={{
                   paddingBottom: 80,
                 }}

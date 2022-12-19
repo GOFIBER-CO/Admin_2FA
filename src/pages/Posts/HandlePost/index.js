@@ -199,7 +199,8 @@ export default function NewPost(props) {
     // console.log(value);
     const getPost = async () => {
       const post = await getPostById(value.id);
-      // console.log(post);
+
+      // console.log(post,'post');
       const schema = await getSchemasByPost(value.id);
       schema.map((item) => (item.script = JSON.parse(item.script)));
       setCacheSchemas(schema);
@@ -208,7 +209,7 @@ export default function NewPost(props) {
         id: post._id,
         title: post.title,
         slug: post.slug,
-        menu: post.menu._id || null,
+        menus: post.menu.map((item) => item._id),
         // category: post.category._id,
         tags: post.tags.map((item) => item._id),
         thumb: post.thumb,
@@ -454,8 +455,8 @@ export default function NewPost(props) {
     setContent("");
     setDescription("");
     setDescriptionData("");
-    editorContentRef.current.reset();
-    editorDescriptionRef.current.reset();
+    // editorContentRef.current.reset();
+    // editorDescriptionRef.current.reset();
   };
   const propsUpload = {
     onRemove: async (file) => {
@@ -734,7 +735,7 @@ export default function NewPost(props) {
                   </Select>
                 </Form.Item>
               </Col> */}
-              
+
               {/* <Col sm={3}>
                 <Form.Item
                   name="thumb"
@@ -795,7 +796,7 @@ export default function NewPost(props) {
                     placeholder="Select a post status!"
                     allowClear
 
-                    // defaultValue={{ value: "1", label: "Hiện bài" }}
+                    // initialvalues={{ value: "1", label: "Hiện bài" }}
                   >
                     {listStatus.length > 0 &&
                       listStatus.map((item, index) => {
@@ -929,9 +930,9 @@ export default function NewPost(props) {
                     name="typeSchemas"
                     placeholder="Select a type schemas!"
                     allowClear
-                    defaultValue={"post"}
+                    initialvalues={"post"}
                     onChange={handleChangeTypeSchemas}
-                    // defaultValue={{ value: "1", label: "Hiện bài" }}
+                    // initialValues={{ value: "1", label: "Hiện bài" }}
                   >
                     <Option key={0} value={"post"}>
                       Post Schemas

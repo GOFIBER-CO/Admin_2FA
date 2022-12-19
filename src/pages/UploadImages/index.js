@@ -349,7 +349,7 @@ const UploadImages = () => {
               placement={"right"}
               width={"30%"}
               onClose={onClose}
-              visible={visibleForm}
+              open={visibleForm}
               bodyStyle={{
                 paddingBottom: 80,
               }}
@@ -465,7 +465,7 @@ const UploadImages = () => {
                       {previewImage && (
                         <>
                           <Modal
-                            visible={previewVisible}
+                            open={previewVisible}
                             title={previewTitle}
                             footer={null}
                             onCancel={handleCancel}

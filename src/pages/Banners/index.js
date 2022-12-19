@@ -442,7 +442,7 @@ const Banners = () => {
                       {previewImage && (
                         <>
                           <Modal
-                            visible={previewVisible}
+                            open={previewVisible}
                             title={previewTitle}
                             footer={null}
                             onCancel={handleCancel}

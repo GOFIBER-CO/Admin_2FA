@@ -94,7 +94,7 @@ const Feedbacks = () => {
       dataRes?.data &&
       dataRes?.data.length > 0 &&
       dataRes?.data.map((item) => {
-        console.log(item, "saedsa   ");
+        // console.log(item, "saedsa   ");
         return {
           key: item._id,
           feedbackName: item.feedbackName,
@@ -109,7 +109,7 @@ const Feedbacks = () => {
   // console.log('getAllData', getAllData);
 
   const onFinish = async (data) => {
-    console.log(data);
+    // console.log(data);
     const dataReq = {
       feedbackName: data.feedbackName,
       feedbackContent: data.feedbackContent,
@@ -117,7 +117,7 @@ const Feedbacks = () => {
     };
     // console.log("dataReq: ", dataReq);
     if (!data.id) {
-      console.log(`ko co id`);
+      // console.log(`ko co id`);
       //Save
       const dataRes = await insertFeedback(dataReq);
       if (dataRes) {
@@ -129,7 +129,7 @@ const Feedbacks = () => {
         message.error(`Save Failed! ${dataRes.message}`);
       }
     } else {
-      console.log(`co id`, data.id);
+      // console.log(`co id`, data.id);
 
       //Update
       // const dataRes = await updateMenu(data.id, dataReq);
@@ -164,7 +164,7 @@ const Feedbacks = () => {
 
   const handleSearch = async () => {
     const dataForm = form.getFieldsValue();
-    console.log('dataForm: ', dataForm);
+    // console.log('dataForm: ', dataForm);
 
     const params = {
       pageIndex: 1,
@@ -179,7 +179,7 @@ const Feedbacks = () => {
   const onEdit = async (key) => {
     // console.log(key);
     const dataEdit = listFeedback.filter((item) => item.key === key);
-    console.log("dataEdit: ", dataEdit);
+    // console.log("dataEdit: ", dataEdit);
     form.setFieldsValue({
       id: dataEdit[0]?.key,
       feedbackName: dataEdit[0]?.feedbackName,
@@ -191,7 +191,7 @@ const Feedbacks = () => {
   };
 
   const onDelete = async (key) => {
-    console.log(key);
+    // console.log(key);
     const dataRes = await deleteFeedback(key);
     dataRes.status === 1
       ? message.success(`Delete Success! ${dataRes.message}`)
@@ -210,7 +210,7 @@ const Feedbacks = () => {
     setContent("");
     setDrawerTitle("Add Feedback");
     showDrawer();
-    console.log(visibleForm);
+    // console.log(visibleForm);
     form.resetFields();
     setFileList([]);
     setPreviewImage("");
@@ -319,7 +319,7 @@ const Feedbacks = () => {
   const handleCloseDrawer = () => {
     setContent("");
     setVisibleForm(false);
-    console.log(visibleForm);
+    // console.log(visibleForm);
     form.resetFields();
     setFileList([]);
     setPreviewImage("");
@@ -336,7 +336,7 @@ const Feedbacks = () => {
               placement={"right"}
               width={"30%"}
               onClose={onClose}
-              visible={visibleForm}
+              open={visibleForm}
               bodyStyle={{
                 paddingBottom: 80,
               }}

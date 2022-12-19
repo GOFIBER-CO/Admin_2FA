@@ -77,7 +77,7 @@ const Menus = () => {
           pageSize: 100000,
           search: "",
         };
-    console.log(params);
+    // console.log(params);
     const dataRes = await getAllMenu(params);
     const data =
       dataRes?.data &&
@@ -125,7 +125,7 @@ const Menus = () => {
       }
     } else {
       //Update
-
+      console.log("data: ", data);
       const dataRes = await updateMenu(data.id, dataReq);
       if (dataRes.status === 1) {
         await updateSchemas(data.idschema, dataSchema);
@@ -215,7 +215,7 @@ const Menus = () => {
     setContent("");
     setDrawerTitle("Add Menu");
     showDrawer();
-    console.log(visibleForm);
+    // console.log(visibleForm);
     form.resetFields();
     setFileList([]);
     setPreviewImage("");
@@ -332,7 +332,7 @@ const Menus = () => {
   const handleCloseDrawer = () => {
     setContent("");
     setVisibleForm(false);
-    console.log(visibleForm);
+    // console.log(visibleForm);
     form.resetFields();
     setFileList([]);
     setPreviewImage("");
@@ -349,7 +349,7 @@ const Menus = () => {
               placement={"right"}
               width={"30%"}
               onClose={onClose}
-              visible={visibleForm}
+              open={visibleForm}
               bodyStyle={{
                 paddingBottom: 80,
               }}
@@ -441,8 +441,6 @@ const Menus = () => {
                         })}
                     </Select>
                   </Form.Item> */}
-
-                 
 
                   {/* <Form.Item name="menuIcon" label="Menu Icon" className="">
                     <Space align="start">

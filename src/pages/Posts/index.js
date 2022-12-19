@@ -303,7 +303,7 @@ const Posts = () => {
       title: "Menu",
       dataIndex: "menu",
       render: (_, record) => {
-        console.log(`_`,_);
+        // console.log(`_`,_);
         const listMenuName = _?.map((item, index) => {
                 return (
                   <Tag color="default" key={index}>
@@ -415,7 +415,7 @@ const Posts = () => {
               <Drawer
                 width={"70%"}
                 onClose={onClose}
-                visible={visibleForm}
+                open ={visibleForm}
                 bodyStyle={{
                   paddingBottom: 80,
                   marginTop: 60,

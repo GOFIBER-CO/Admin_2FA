@@ -71,7 +71,7 @@ const Schemas = () => {
   useEffect(() => {
     async function fetchData() {
       const dataRes = await getAllData();
-      console.log(dataRes);
+      // console.log(dataRes);
       setListSchemas(dataRes);
       const dataMenu = await getAllMenu();
       setListMenu(dataMenu.data);
@@ -93,8 +93,9 @@ const Schemas = () => {
           search: "",
         };
     const dataRes = await getAllSchemas(params);
-    console.log(dataRes);
+    // console.log(dataRes);
     const data =
+    
       dataRes?.data &&
       dataRes?.data.length > 0 &&
       dataRes?.data.map((item) => {
@@ -168,7 +169,7 @@ const Schemas = () => {
     };
 
     const dataRes = await getAllData(params);
-    console.log(dataRes);
+    // console.log(dataRes);
     setListSchemas(dataRes);
   };
 
@@ -176,7 +177,7 @@ const Schemas = () => {
     const dataEdit = listSchemas.filter((item) => item.key === key);
 
     setIsShow(dataEdit[0].isShow);
-    console.log("dataEdit[0]", dataEdit[0]);
+    // console.log("dataEdit[0]", dataEdit[0]);
     form.setFieldsValue({
       name: dataEdit[0].name,
       script: dataEdit[0].script,
@@ -328,7 +329,7 @@ const Schemas = () => {
               placement={"right"}
               width={"30%"}
               onClose={onClose}
-              visible={visibleForm}
+              open={visibleForm}
               bodyStyle={{
                 paddingBottom: 80,
               }}
@@ -461,7 +462,7 @@ const Schemas = () => {
                     >
                       {listMenu.length > 0 &&
                         listMenu.map((item) => {
-                          console.log(item);
+                          // console.log(item);
                           return (
                             <Option key={item._id} value={item.menuSlug}>
                               {item.menuName}
