@@ -41,7 +41,6 @@ export const API_MENU_UPDATE = "/api/menu/update";
 export const API_MENU_GET_PAGING = "/api/menu/getPaging";
 export const API_MENU_DELETE = "/api/menu/delete";
 export const API_MENU_GET_PAGING_BY_ID = "/api/menu/getById";
-
 //Apps
 export const API_APP_INSERT = "/api/app/insert";
 export const API_APP_UPDATE = "/api/app/update";
@@ -103,3 +102,11 @@ export const API_USER_UPDATE = "/api/user/update";
 export const API_USER_DELETE = "/api/user/delete";
 export const API_USER_GET_PAGING = "/api/user/getPaging";
 export const API_USER_GET_PAGING_BY_ID = "/api/user/getById";
+
+//Feedback
+export const API_FEEDBACK_INSERT = "/api/feedback/insert";
+// export const API_FEEDBACK_GETALL = "/api/feedback/getAll";
+export const API_FEEDBACK_UPDATE = "/api/feedback/update";
+export const API_FEEDBACK_DELETE = "/api/feedback/delete";
+export const API_FEEDBACK_GET_PAGING = "/api/feedback/getPaging";
+// export const API_FEEDBACK_GET_PAGING = "/api/menu/getPaging";
