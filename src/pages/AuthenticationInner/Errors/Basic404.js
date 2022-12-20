@@ -7,7 +7,7 @@ import ParticlesAuth from "../ParticlesAuth";
 import error from "../../../assets/images/error.svg";
 
 const Basic404 = () => {
-  document.title = "404 | Bóng Đá Thể Thao";
+  document.title = "404 | 2FA";
   return (
     <React.Fragment>
       <div className="auth-page-wrapper">

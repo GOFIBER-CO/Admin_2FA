@@ -169,7 +169,7 @@ const Feedbacks = () => {
     const params = {
       pageIndex: 1,
       pageSize: 10,
-      search: dataForm.menuNameSearch ? dataForm.menuNameSearch : "",
+      search: dataForm.nameFeedback ? dataForm.nameFeedback : "",
     };
     const dataRes = await getAllData(params);
     // setListMenu(dataRes);
@@ -186,7 +186,7 @@ const Feedbacks = () => {
       feedbackContent: dataEdit[0]?.feedbackContent,
       feedbackRate: dataEdit[0]?.feedbackRate,
     });
-    setDrawerTitle("Edit Menu");
+    setDrawerTitle("Edit Feedback");
     showDrawer();
   };
 
@@ -328,7 +328,7 @@ const Feedbacks = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Menu" pageTitle="Management Menus" />
+          <BreadCrumb title="Feedback" pageTitle="Management Feedback" />
 
           <div>
             <Drawer
@@ -447,15 +447,15 @@ const Feedbacks = () => {
                 </Col>
                 <Col sm={3}>
                   <Form.Item
-                    name="menuNameSearch"
+                    name="nameFeedback"
                     label="Search feedback by feedback name:"
                     rules={[
                       {
                         required: false,
-                        message: "Please input menu  name!",
+                        message: "Please input name user feedback!",
                       },
                       {
-                        type: "menuNameSearch",
+                        type: "nameFeedback",
                       },
                       {
                         type: "string",
@@ -465,7 +465,7 @@ const Feedbacks = () => {
                   >
                     <Input
                       placeholder="Enter name"
-                      name="menuNameSearch"
+                      name="nameFeedback"
                       allowClear={true}
                     />
                   </Form.Item>

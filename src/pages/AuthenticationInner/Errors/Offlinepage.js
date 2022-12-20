@@ -5,7 +5,7 @@ import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import offlineImg from "../../../assets/images/auth-offline.gif";
 
 const Offlinepage = () => {
-  document.title = "Offline Page | Bóng Đá Thể Thao";
+  document.title = "Offline Page | 2FA";
   return (
     <React.Fragment>
       <div className="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">

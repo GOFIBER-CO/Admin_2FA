@@ -6,7 +6,7 @@ import { Col, Container, Row } from "reactstrap";
 import error500 from "../../../assets/images/error500.png";
 
 const Error500 = () => {
-  document.title = "500 Error | Bóng Đá Thể Thao";
+  document.title = "500 Error | 2FA";
   return (
     <React.Fragment>
       <div className="auth-page-wrapper py-5 d-flex justify-content-center align-items-center min-vh-100">

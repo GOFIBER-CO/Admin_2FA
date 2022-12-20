@@ -10,8 +10,12 @@ import {
   Tooltip,
   Table,
   Drawer,
+  Upload,
+  Modal,
+  Image,
 } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   deleteApp,
   getAllApp,
@@ -19,18 +23,35 @@ import {
   updateApp,
 } from "../../helpers/helper";
 import moment from "moment";
+import { deleteImageBunny, uploadFileToBunny } from "../../helpers/api_bunny";
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
+    reader.onload = () => resolve(reader.result);
+
+    reader.onerror = (error) => reject(error);
+  });
+function convertToSlug(Text) {
+  return Text.toLowerCase()
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
+}
 const Apps = () => {
   document.title = "Management Apps";
 
   const [form] = Form.useForm();
   const [formSearch] = Form.useForm();
   const [listShortCode, setShortCode] = useState([]);
-  const [isShow, setIsShow] = useState(false);
+  const [isShow, setIsShow] = useState(true);
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
   const [listApp, setApp] = useState([]);
-
+  const [fileList, setFileList] = useState([]);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewVisible, setPreviewVisible] = useState(false);
   // -- Load data
   useEffect(() => {
     async function fetchData() {
@@ -39,9 +60,60 @@ const Apps = () => {
     }
     fetchData();
   }, []);
+  const handleCancel = () => setPreviewVisible(false);
+  //xu ly upload image
+  const handleChangeImage = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+  //end
+
+  //prop upload component
+  const propsUpload = {
+    onRemove: async (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+      const resDelete = await deleteImageBunny(file.name);
+      if (resDelete.HttpCode === 200) {
+        message.success("Delete file to Bunny successfully!");
+      } else {
+        message.error("Delete file to Bunny failed!");
+      }
+    },
+    beforeUpload: async (file) => {
+      setFileList([file]);
+      const resUpload = await uploadFileToBunny(file);
+      if (resUpload.HttpCode === 201) {
+        message.success("Upload file to Bunny successfully!");
+        setPreviewImage("https://bongdathethao.b-cdn.net/" + file.name);
+        setPreviewTitle(file.name);
+        return false;
+      } else {
+        message.error("Upload file to Bunny failed!");
+        deleteImageBunny(file.name);
+        setPreviewImage("");
+        setFileList([]);
+        return false;
+      }
+    },
+  };
+  //end
+  //xu ly preview image
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
+  };
+  //end
 
   const getAllData = async (_prams) => {
-    console.log("_prams: ", _prams);
     const params = _prams
       ? _prams
       : {
@@ -50,19 +122,16 @@ const Apps = () => {
           search: "",
         };
     const dataRes = await getAllApp(params);
-
     const data =
       dataRes?.data &&
       dataRes?.data.length > 0 &&
       dataRes?.data.map((item) => {
-        console.log("item", item);
-
         return {
           key: item._id,
           name: item.appName,
           icon: item.appIcon,
-          content: item.appContent,
-          // status: item.status,
+          content: item.content,
+          status: item?.isShow,
           createdTime: moment(new Date(item.createdTime)).format("DD/MM/YYYY"),
         };
       });
@@ -71,9 +140,11 @@ const Apps = () => {
 
   const onFinish = async (data) => {
     const dataReq = {
-      name: data.name,
+      appName: data.name,
+      appSlug: convertToSlug(data.name),
+      appIcon: previewTitle,
       content: data.content,
-      status: isShow,
+      isShow: isShow,
     };
 
     if (!data.id) {
@@ -118,11 +189,19 @@ const Apps = () => {
     form.setFieldsValue({
       id: dataEdit[0].key,
       name: dataEdit[0].name,
+      icon: dataEdit[0].icon,
       content: dataEdit[0].content,
       status: dataEdit[0].status,
     });
-
-    setDrawerTitle("Edit Short code");
+    setFileList([
+      {
+        url: `https://bongdathethao.b-cdn.net/${dataEdit[0].icon}`,
+        name: dataEdit[0].icon,
+      },
+    ]);
+    setPreviewImage(`https://bongdathethao.b-cdn.net/${dataEdit[0].icon}`);
+    setPreviewTitle(dataEdit[0].icon);
+    setDrawerTitle("Edit App");
     showDrawer();
   };
 
@@ -156,6 +235,15 @@ const Apps = () => {
     {
       title: "App Icon",
       dataIndex: "icon",
+      render: (_) => {
+        return (
+          <Image
+            src={`https://bongdathethao.b-cdn.net/${_}`}
+            height={60}
+            width={60}
+          />
+        );
+      },
     },
     {
       title: "App Content",
@@ -196,20 +284,21 @@ const Apps = () => {
 
   const onClose = () => {
     setVisibleForm(false);
+    setFileList([]);
+    setPreviewImage("");
+    setPreviewTitle("");
   };
   const showDrawer = () => {
     setVisibleForm(true);
   };
   const handleNewShortCode = () => {
-    setDrawerTitle("Add Short code");
+    setDrawerTitle("Add App");
     showDrawer();
-    console.log(visibleForm);
     form.resetFields();
   };
   const handleCloseDrawer = () => {
     setDrawerTitle("");
     setVisibleForm(false);
-    console.log(visibleForm);
     form.resetFields();
   };
 
@@ -233,7 +322,7 @@ const Apps = () => {
               <Col sm={3}>
                 <Form.Item
                   name="name"
-                  label="Search short code by name:"
+                  label="Search app by name:"
                   rules={[
                     {
                       required: false,
@@ -348,6 +437,56 @@ const Apps = () => {
                         name="content"
                         allowClear={true}
                       />
+                    </Form.Item>
+                    <Form.Item
+                      name="icon"
+                      label="Icon App"
+                      className=""
+                      rules={[
+                        {
+                          required: false,
+                          message: "Please select icon app!",
+                        },
+                      ]}
+                    >
+                      <Space align="start">
+                        <Upload
+                          {...propsUpload}
+                          listType="picture-card"
+                          fileList={fileList}
+                          onChange={handleChangeImage}
+                          onPreview={handlePreview}
+                        >
+                          {fileList.length >= 1 ? null : (
+                            <div>
+                              <PlusOutlined />
+                              <div
+                                style={{
+                                  marginTop: 8,
+                                }}
+                              >
+                                Upload
+                              </div>
+                            </div>
+                          )}
+                        </Upload>
+                        {previewImage && (
+                          <>
+                            <Modal
+                              visible={previewVisible}
+                              title={previewTitle}
+                              footer={null}
+                              onCancel={handleCancel}
+                            >
+                              <img
+                                alt={previewTitle}
+                                style={{ width: "100%" }}
+                                src={previewImage}
+                              />
+                            </Modal>
+                          </>
+                        )}
+                      </Space>
                     </Form.Item>
                     <Form.Item
                       name="status"

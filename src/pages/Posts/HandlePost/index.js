@@ -133,7 +133,7 @@ export default function NewPost(props) {
     uploadDate: `${moment().format()}`,
     author: {
       "@type": "Organization",
-      name: "Bóng đá thể thao",
+      name: "2FA",
       logo: {
         "@type": "ImageObject",
         url: "https://bongdathethao.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.b973cdae.png&w=256&q=75",
@@ -167,7 +167,7 @@ export default function NewPost(props) {
     articleSection: `[]`,
     publisher: {
       "@type": "Organization",
-      name: "Bóng đá thể thao",
+      name: "2FA",
       logo: {
         "@type": "ImageObject",
         url: `${process.env.REACT_APP_URL}/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.b973cdae.png&w=256&q=75`,

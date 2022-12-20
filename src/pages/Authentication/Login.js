@@ -72,7 +72,7 @@ const Login = (props) => {
     }, 3000);
   }, [dispatch, error]);
 
-  document.title = "Đăng Nhập Bóng Đá Thể Thao";
+  document.title = "Đăng Nhập 2FA";
   return (
     <React.Fragment>
       <ParticlesAuth>
@@ -95,9 +95,9 @@ const Login = (props) => {
                 <Card className="mt-4">
                   <CardBody className="p-4">
                     <div className="text-center mt-2">
-                      <h5 className="text-primary"> Bóng Đá Thể Thao </h5>
+                      <h5 className="text-primary"> 2FA </h5>
                       {/* <p className="text-muted">
-                        Sign in to continue to thethao789
+                        Sign in to continue to admin_2FA
                       </p> */}
                     </div>
                     {error && error ? (
